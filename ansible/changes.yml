@@ -1,0 +1,7 @@
+---
+- hosts: vm
+  user: dkostmii
+  become: true
+  tasks:
+    - name: Change hostname
+      command: hostnamectl set-hostname dmytro-kostelnyi-lab2
