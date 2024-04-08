@@ -1,7 +1,8 @@
 resource "virtualbox_vm" "example" {
-  name        = "terraform-provisioned-vm-1"
-  image       = "https://vagrantcloud.com/ubuntu/boxes/xenial64/versions/20180420.0.0/providers/virtualbox.box"
-  memory      = "1024 mib"
+  count       = 2
+  name        = "terraform-provisioned-vm-${count.index + 1}"
+  image       = var.img
+  memory      = var.ram
   cpus        = "1"
   boot_order  = ["disk"]
 
@@ -9,4 +10,9 @@ resource "virtualbox_vm" "example" {
     type           = "bridged"
     host_interface = "wlan0"
   }
+}
+
+resource "local_file" "tf_ip" {
+  content  = "[ALL]\n${virtualbox_vm.example[0].network_adapter.0.ipv4_address} ansible_ssh_user=ubuntu"
+  filename = "./inventory"
 }
